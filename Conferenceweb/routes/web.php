@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\OrganizerMiddleware;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrganizerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +30,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware([AdminMiddleware::class])->group(function () {
+    // Routes only accessible by Admin
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+});
+
+Route::middleware([OrganizerMiddleware::class])->group(function () {
+    // Routes only accessible by Organizer
+    Route::get('/organizer/dashboard', [OrganizerController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';
