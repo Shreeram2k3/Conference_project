@@ -16,9 +16,17 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->userrole !== 'admin') {
-            return redirect('/dashboard'); // Redirect non-admins
+        $user = auth()->user();
+
+        // allow only admin to access the routes
+        if ($user->userrole === 'admin') {
+            return $next($request);
         }
-        return $next($request);
+    
+        // if not admin redirect to dashboard
+       else {
+            return redirect('/dashboard');
+        }   
+        
     }
 }

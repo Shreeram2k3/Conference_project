@@ -35,11 +35,15 @@ Route::middleware('auth')->group(function () {
 Route::middleware([AdminMiddleware::class])->group(function () {
     // Routes only accessible by Admin
     Route::get('/admin/dashboard', [AdminController::class, 'index']);
+    Route::get('/admin/events', [AdminController::class, 'events']);
+    Route::get('/admin/registrations', [AdminController::class, 'registrations']);
 });
 
 Route::middleware([OrganizerMiddleware::class])->group(function () {
     // Routes only accessible by Organizer
     Route::get('/organizer/dashboard', [OrganizerController::class, 'index']);
+    Route::get('/organizer/events', [OrganizerController::class, 'events']);
+    Route::get('/organizer/registrations', [OrganizerController::class, 'registrations']);
 });
 
 require __DIR__.'/auth.php';

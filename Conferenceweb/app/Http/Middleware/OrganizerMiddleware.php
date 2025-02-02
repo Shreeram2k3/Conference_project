@@ -16,11 +16,14 @@ class OrganizerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $user = auth()->user();
         
-        if (auth()->user()->userrole !== 'organizer') {
-            return redirect('/dashboard'); // Redirect non-organizers
+        if ($user->userrole === 'admin' || $user->userrole === 'organizer') {
+            return $next($request);
         }
 
-        return $next($request);
+
+        
+        return redirect('/dashboard'); // Redirect non-organizers
     }
 }
