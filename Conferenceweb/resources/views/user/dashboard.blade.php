@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-<h1>Welcome to the Organizer Dashboard!</h1>
+<h1>Welcome to the Home!</h1>
 <form action="{{ route('logout') }}" method="POST">
     @csrf
     <button type="submit" class="btn btn-danger">Logout</button>
