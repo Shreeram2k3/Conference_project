@@ -65,4 +65,19 @@ class EventController extends Controller
         $event->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Event deleted successfully.');
     }
+
+    public function register(Event $event)
+    {
+        $user = auth()->user(); // Get the authenticated user
+
+        // Check if the user is already registered for this event
+        if ($event->users()->where('user_id', $user->id)->exists()) {
+            return redirect()->route('events.index')->with('error', 'You are already registered for this event.');
+        }
+
+        // Attach the user to the event
+        $event->users()->attach($user);
+
+        return redirect()->route('events.index')->with('success', 'You have successfully registered for the event!');
+    }
 }

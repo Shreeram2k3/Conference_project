@@ -83,4 +83,7 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
+Route::post('/events/{event}/register', [EventController::class, 'register'])->name('events.register');
+
+
 require __DIR__.'/auth.php';
