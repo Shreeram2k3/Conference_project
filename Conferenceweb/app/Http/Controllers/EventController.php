@@ -24,7 +24,7 @@ class EventController extends Controller
     // Create a new event (this method is for organizer use, will not be shown to users)
     public function create()
     {
-        return view('organizer.events.create');
+        return view('events.create');
     }
 
     // Store a newly created event
