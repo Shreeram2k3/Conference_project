@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events', [EventController::class, 'index'])->name('events.index'); // Browse events
     Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show'); // View individual event
     Route::post('/events/{event}/register', [UserController::class, 'register'])->name('events.register'); // Register for an event
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
 });
 
 // Admin Routes (Accessible only by Admin)
@@ -49,6 +50,7 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::delete('/admin/events/{event}', [AdminController::class, 'destroyEvent'])->name('admin.events.destroy'); // Delete event
     Route::get('/admin/events/{event}/edit', [EventController::class, 'edit'])->name('admin.events.edit'); // Edit event form
     Route::put('/admin/events/{event}', [EventController::class, 'update'])->name('admin.events.update'); // Update event details
+    
 });
 
 // Organizer Routes (Accessible only by Organizer)
@@ -69,6 +71,8 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/');
 })->middleware('auth')->name('logout');
+
+
 
 // Catch-all Route for Authentication (if necessary)
 require __DIR__.'/auth.php';

@@ -21,43 +21,43 @@ class EventController extends Controller
         return view('events.show', compact('event'));
     }
 
-    // Create a new event (this method is for organizer use, will not be shown to users)
-    public function create()
-    {
-        return view('events.create');
-    }
+    // // Create a new event (this method is for organizer use, will not be shown to users)
+    // public function create()
+    // {
+    //     return view('events.create');
+    // }
 
-    // Store a newly created event
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'date' => 'required|date',
-        ]);
+    // // Store a newly created event
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'title' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'date' => 'required|date',
+    //     ]);
 
-        auth()->user()->events()->create($validated);
-        return redirect()->route('organizer.dashboard')->with('success', 'Event created successfully.');
-    }
+    //     auth()->user()->events()->create($validated);
+    //     return redirect()->route('organizer.dashboard')->with('success', 'Event created successfully.');
+    // }
 
-    // Edit event (for organizers)
-    public function edit(Event $event)
-    {
-        return view('organizer.events.edit', compact('event'));
-    }
+    // // Edit event (for organizers)
+    // public function edit(Event $event)
+    // {
+    //     return view('organizer.events.edit', compact('event'));
+    // }
 
-    // Update event (for organizers)
-    public function update(Request $request, Event $event)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'date' => 'required|date',
-        ]);
+    // // Update event (for organizers)
+    // public function update(Request $request, Event $event)
+    // {
+    //     $validated = $request->validate([
+    //         'title' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'date' => 'required|date',
+    //     ]);
 
-        $event->update($validated);
-        return redirect()->route('organizer.dashboard')->with('success', 'Event updated successfully.');
-    }
+    //     $event->update($validated);
+    //     return redirect()->route('organizer.dashboard')->with('success', 'Event updated successfully.');
+    // }
 
     // Delete event (admin functionality)
     public function destroy(Event $event)
@@ -80,4 +80,21 @@ class EventController extends Controller
 
         return redirect()->route('events.index')->with('success', 'You have successfully registered for the event!');
     }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
+            'max_participants' => 'nullable|integer|min:1',
+        ]);
+    
+        Event::create($validated); 
+    
+        return redirect()->route('admin.dashboard')->with('success', 'Event created successfully.');
+    }
+    
 }

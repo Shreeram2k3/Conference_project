@@ -18,5 +18,10 @@ class Event extends Model
     {
         return $this->hasMany(Registration::class);
     }
+
+    protected $fillable = [
+        'event_name', 'description', 'start_date', 'end_date', 'location', 'max_participants'
+    ];
+    
     
 }
