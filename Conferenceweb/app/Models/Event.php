@@ -23,5 +23,9 @@ class Event extends Model
         'event_name', 'description', 'start_date', 'end_date', 'location', 'max_participants'
     ];
     
+    public function timelines()
+    {
+        return $this->hasMany(Timeline::class);
+    }
     
 }

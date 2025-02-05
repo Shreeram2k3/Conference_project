@@ -38,14 +38,14 @@
 
                 <!-- Start Date -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Start Date & Time</label>
-                    <input type="datetime-local" name="start_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                    <label class="block text-sm font-medium text-gray-700">Start Date</label>
+                    <input type="date" name="start_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                 </div>
 
                 <!-- End Date -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">End Date & Time</label>
-                    <input type="datetime-local" name="end_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                    <label class="block text-sm font-medium text-gray-700">End Date</label>
+                    <input type="date" name="end_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                 </div>
 
                 <!-- Buttons -->
@@ -58,13 +58,16 @@
     </div>
 </div>
 
+
+
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
     @foreach ($events as $event)
+    
       <div class="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center border-2  border-gray-400 cursor-pointer hover:bg-gray-100 transition">
         <h3 class="text-xl font-semibold text-gray-800">{{ $event->event_name }}</h3>
         <p class="mt-2 text-gray-600 text-center">{{ Str::limit($event->description, 100) }}</p>
-        <p class="mt-4 text-gray-500 text-sm">Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y h:i A') }}</p>
-        <p class="text-gray-500 text-sm">End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y h:i A') }}</p>
+        <p class="mt-4 text-gray-500 text-sm">Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
+        <p class="text-gray-500 text-sm">End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
         <a href="{{ route('events.show', $event->id) }}" class="mt-4 text-blue-500">View Event</a>
       </div>
     @endforeach

@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TimelineController;
 
 /*
 |----------------------------------------------------------------------
@@ -72,7 +73,8 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-
+    //  time line routes
+    Route::post('events/{eventId}/timelines', [TimelineController::class, 'store'])->name('timelines.store');
 
 // Catch-all Route for Authentication (if necessary)
 require __DIR__.'/auth.php';

@@ -18,7 +18,9 @@ class EventController extends Controller
     // Show a specific event
     public function show(Event $event)
     {
-        return view('events.show', compact('event'));
+        $timelines = $event->timelines()->orderBy('date', 'asc')->get();
+
+          return view('events.show', compact('event', 'timelines'));
     }
 
     // // Create a new event (this method is for organizer use, will not be shown to users)
