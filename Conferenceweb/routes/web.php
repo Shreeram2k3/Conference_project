@@ -75,6 +75,8 @@ Route::post('/logout', function () {
 
     //  time line routes
     Route::post('events/{eventId}/timelines', [TimelineController::class, 'store'])->name('timelines.store');
+    Route::put('/timelines/{timeline}', [TimelineController::class, 'update'])->name('timelines.update');
+    Route::delete('/timelines/{timeline}', [TimelineController::class, 'destroy'])->name('timelines.destroy');
 
 // Catch-all Route for Authentication (if necessary)
 require __DIR__.'/auth.php';
