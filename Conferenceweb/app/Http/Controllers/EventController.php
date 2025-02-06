@@ -98,5 +98,26 @@ class EventController extends Controller
     
         return redirect()->route('admin.dashboard')->with('success', 'Event created successfully.');
     }
+
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'event_name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $event = Event::findOrFail($id);
+    $event->update([
+        'event_name' => $request->event_name,
+        'description' => $request->description,
+        'start_date' => $request->start_date,
+        'end_date' => $request->end_date,
+    ]);
+
+    return redirect()->route('admin.dashboard')->with('success', 'Event updated successfully.');
+}
+
     
 }
