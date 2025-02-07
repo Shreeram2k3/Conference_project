@@ -2,6 +2,8 @@
 
 @section('content')
 
+<!-- This is the admin's Add timelines to event page  -->
+
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"> 
     <!-- Event Details -->
     <div class="text-center">

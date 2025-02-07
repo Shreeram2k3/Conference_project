@@ -9,14 +9,15 @@ class Registration extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'phone', 'email', 'institution', 'designation', 'event_id', 'user_id'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function event()
     {
         return $this->belongsTo(Event::class);
     }
-    
 }
