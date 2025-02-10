@@ -20,9 +20,13 @@ class EventController extends Controller
     public function show(Event $event)
     {
         $timelines = $event->timelines()->orderBy('date', 'asc')->get();
-
-          return view('events.show', compact('event', 'timelines'));
+        
+        // Fetch registrations only for this event
+        $registrations = Registration::where('event_id', $event->id)->get();
+    
+        return view('events.show', compact('event', 'timelines', 'registrations'));
     }
+    
 
     // // Create a new event (this method is for organizer use, will not be shown to users)
     // public function create()
@@ -149,7 +153,7 @@ public function registration(Request $request)
     return view('admin.registration', compact('registrations', 'events'));
 }
 
-
+    
 
 
     
