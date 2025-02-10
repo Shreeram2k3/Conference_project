@@ -22,6 +22,10 @@
                 <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
             </div>
 
+            <!-- Search Button -->
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center">
+                <i class="fas fa-search mr-2"></i> Search
+            </button>
             <!-- Event Dropdown -->
             <div class="relative">
                 <select 
@@ -39,10 +43,6 @@
                 <i class="fas fa-calendar-alt absolute right-3 top-3 text-gray-400"></i>
             </div>
 
-            <!-- Search Button -->
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center">
-                <i class="fas fa-search mr-2"></i> Search
-            </button>
         </form>
     </div>
 
@@ -51,7 +51,7 @@
         <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
             <thead class="bg-gray-200 text-gray-700 uppercase text-left sticky top-0">
                 <tr>
-                    <th class="py-3 px-4 border">S.no</th>
+                    <th class="py-3 px-4 border">Sno</th>
                     <th class="py-3 px-4 border"><i class="fas fa-user"></i> Name</th>
                     <th class="py-3 px-4 border"><i class="fas fa-envelope"></i> Email</th>
                     <th class="py-3 px-4 border"><i class="fas fa-phone"></i> Phone</th>

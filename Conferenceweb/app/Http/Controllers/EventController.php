@@ -123,27 +123,32 @@ class EventController extends Controller
 
 public function registration(Request $request)
 {
-    $query = Registration::with('user', 'event');
+    $query = Registration::with('event'); // Only eager load event, not users
 
-    // Search by user name, email, or phone
-    if ($request->has('search') && $request->search != '') {
-        $searchTerm = $request->search;
-        $query->whereHas('user', function ($q) use ($searchTerm) {
-            $q->where('name', 'LIKE', "%{$searchTerm}%")
-              ->orWhere('email', 'LIKE', "%{$searchTerm}%");
-        })->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+    // Case-insensitive search within the registrations table
+    if ($request->has('search') && !empty($request->search)) {
+        $searchTerm = strtolower($request->search); // Convert to lowercase for case-insensitive search
+
+        $query->where(function ($q) use ($searchTerm) {
+            $q->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+              ->orWhereRaw('LOWER(email) LIKE ?', ["%{$searchTerm}%"])
+              ->orWhereRaw('LOWER(phone) LIKE ?', ["%{$searchTerm}%"])
+              ->orWhereRaw('LOWER(institution) LIKE ?', ["%{$searchTerm}%"])
+              ->orWhereRaw('LOWER(designation) LIKE ?', ["%{$searchTerm}%"]);
+        });
     }
 
     // Filter by event
-    if ($request->has('event_id') && $request->event_id != '') {
+    if ($request->has('event_id') && !empty($request->event_id)) {
         $query->where('event_id', $request->event_id);
     }
 
-    $registrations = $query->get();
+    $registrations = $query->get(); // Fetch filtered registrations
     $events = Event::all(); // Fetch all events for dropdown
 
     return view('admin.registration', compact('registrations', 'events'));
 }
+
 
 
 

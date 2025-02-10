@@ -33,4 +33,6 @@ class AdminController extends Controller
         $event->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Event deleted successfully');
     }
+
+    
 }
