@@ -34,6 +34,11 @@ Route::middleware(['auth'])->group(function () {
 // Admin Routes (with AdminMiddleware)
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    
+   
+    Route::get('/admin/registration', [EventController::class, 'registration'])->name('admin.registration');
+
+
 
     // Event Management
     Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');
@@ -53,6 +58,8 @@ Route::post('/logout', function () {
 Route::post('/events/{event}/timelines', [TimelineController::class, 'store'])->name('timelines.store');
 Route::put('/timelines/{timeline}', [TimelineController::class, 'update'])->name('timelines.update');
 Route::delete('/timelines/{timeline}', [TimelineController::class, 'destroy'])->name('timelines.destroy');
+
+
 
 // Auth Routes
 require __DIR__.'/auth.php';

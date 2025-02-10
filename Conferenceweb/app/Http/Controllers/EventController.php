@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Event;
+use App\Models\Registration; 
 
 class EventController extends Controller
 {
@@ -118,6 +119,33 @@ class EventController extends Controller
 
     return redirect()->route('admin.dashboard')->with('success', 'Event updated successfully.');
 }
+
+
+public function registration(Request $request)
+{
+    $query = Registration::with('user', 'event');
+
+    // Search by user name, email, or phone
+    if ($request->has('search') && $request->search != '') {
+        $searchTerm = $request->search;
+        $query->whereHas('user', function ($q) use ($searchTerm) {
+            $q->where('name', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+        })->orWhere('phone', 'LIKE', "%{$searchTerm}%");
+    }
+
+    // Filter by event
+    if ($request->has('event_id') && $request->event_id != '') {
+        $query->where('event_id', $request->event_id);
+    }
+
+    $registrations = $query->get();
+    $events = Event::all(); // Fetch all events for dropdown
+
+    return view('admin.registration', compact('registrations', 'events'));
+}
+
+
 
     
 }

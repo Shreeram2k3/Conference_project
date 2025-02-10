@@ -29,6 +29,8 @@
                 <!-- Role-Based Links -->
                 @if(auth()->user()->userrole === 'admin')
                     <li><a href="/admin/dashboard" class="hover:text-gray-300">Admin Dashboard</a></li>
+                    <li><a href="{{ route('admin.registration') }}" class="hover:text-gray-300">Registrations</a>
+                    </li>
                 @elseif(auth()->user()->userrole === 'organizer')
                     <li><a href="/organizer/dashboard" class="hover:text-gray-300">Organizer Dashboard</a></li>
                 @endif
