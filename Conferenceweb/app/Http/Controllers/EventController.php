@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Event;
 use App\Models\Registration; 
+use Illuminate\Support\Facades\Storage;
+
 
 class EventController extends Controller
 {
@@ -69,6 +71,9 @@ class EventController extends Controller
     // Delete event (admin functionality)
     public function destroy(Event $event)
     {
+        if ($event->sample_paper) {
+            Storage::disk('public')->delete($event->sample_paper);
+        }
         $event->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Event deleted successfully.');
     }
@@ -97,7 +102,12 @@ class EventController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'location' => 'nullable|string|max:255',
             'max_participants' => 'nullable|integer|min:1',
+            'sample_paper' => 'nullable|file|mimes:doc,docx|max:2048',
         ]);
+
+        if ($request->hasFile('sample_paper')) {
+            $validated['sample_paper'] = $request->file('sample_paper')->store('sample_papers', 'public');
+        }
     
         Event::create($validated); 
     
@@ -119,7 +129,23 @@ class EventController extends Controller
         'description' => $request->description,
         'start_date' => $request->start_date,
         'end_date' => $request->end_date,
+        'sample_paper' => 'nullable|file|mimes:doc,docx|max:2048',
     ]);
+
+    $event = Event::findOrFail($id);
+
+    $data = $request->only(['event_name', 'description', 'start_date', 'end_date']);
+
+    if ($request->hasFile('sample_paper')) {
+        // Delete old file if exists
+        if ($event->sample_paper) {
+            Storage::disk('public')->delete($event->sample_paper);
+        }
+
+        $data['sample_paper'] = $request->file('sample_paper')->store('sample_papers', 'public');
+    }
+
+    $event->update($data);
 
     return redirect()->route('admin.dashboard')->with('success', 'Event updated successfully.');
 }
@@ -154,7 +180,19 @@ public function registration(Request $request)
 }
 
     
+public function downloadSample($id)
+{
+    // Find event by ID
+    $event = Event::findOrFail($id);
 
+    // Check if the event has a sample paper file
+    if (!$event->sample_paper || !Storage::exists('public/' . $event->sample_paper)) {
+        abort(404, 'File not found.');
+    }
+
+    // Return the file for download
+    return Storage::download('public/' . $event->sample_paper);
+}
 
     
 }

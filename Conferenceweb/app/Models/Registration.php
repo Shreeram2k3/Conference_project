@@ -9,7 +9,7 @@ class Registration extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'phone', 'email', 'institution', 'designation', 'event_id', 'user_id'];
+    protected $fillable = ['name','phone', 'email', 'institution', 'designation', 'event_id', 'user_id','abstract'];
 
     public function user()
     {

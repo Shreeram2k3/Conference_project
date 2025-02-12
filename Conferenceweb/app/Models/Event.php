@@ -20,7 +20,7 @@ class Event extends Model
     }
 
     protected $fillable = [
-        'event_name', 'description', 'start_date', 'end_date', 'location', 'max_participants'
+        'event_name', 'description', 'start_date', 'end_date', 'location', 'max_participants','sample_paper'
     ];
     
     public function timelines()

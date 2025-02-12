@@ -29,6 +29,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Event Registration (Floating Form Submission)
     Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
+    
+    Route::get('/download/sample/{id}', [EventController::class, 'downloadSample'])
+    ->name('download.sample');
 });
 
 // Admin Routes (with AdminMiddleware)

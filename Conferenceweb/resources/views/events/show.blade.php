@@ -31,6 +31,38 @@
         </div>
     @endif
 
+    <!-- Download Paper Format Button -->
+    @if ($event->sample_paper)
+
+        <div class="mt-10">
+            <h2 class="text-2xl font-semibold">Paper Format</h2>
+
+        </div>
+        <div class="mt-6 ">
+            
+        <!-- <button onclick="document.getElementById('previewFrame').src='{{ Storage::url($event->sample_paper) }}'; document.getElementById('previewContainer').classList.remove('hidden');" 
+                    class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
+                Preview
+            </button>
+
+            <button onclick="document.getElementById('previewFrame').src='https://docs.google.com/gview?url={{ Storage::url($event->sample_paper) }}&embedded=true'; document.getElementById('previewContainer').classList.remove('hidden');" 
+        class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
+        Preview
+    </button> -->
+
+            
+            <a href="{{Storage::url($event->sample_paper) }}" target="_blank"
+            class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
+            
+                📄 Download
+            </a>
+
+            <div id="previewContainer" class="mt-6 hidden">
+            <iframe id="previewFrame" class="w-full h-[500px] border border-gray-300 rounded-lg"></iframe>
+            </div>
+        </div>
+    @endif
+
     <!-- Timeline Section -->
     <div class="mt-10" x-data="{ showEditForm: false, editData: { id: '', title: '', description: '', date: '' } }" >
         <h2 class="text-2xl font-semibold">Event Timeline</h2>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Registration;
 use App\Models\Event;
+use Illuminate\Support\Facades\Storage;
 
 class RegistrationController extends Controller
 {
@@ -21,7 +22,15 @@ class RegistrationController extends Controller
             'email' => 'required|email|max:255',
             'institution' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
-        ]);
+            'abstract' => 'required|file|mimes:doc,docx|max:2048',
+         ]);
+
+        // Handle file upload
+        $abstractPath = null;
+        if ($request->hasFile('abstract')) {
+            $abstractPath = $request->file('abstract')->store('abstracts', 'public');
+        }
+
 
         Registration::create([
             'name' => $request->name,
@@ -31,6 +40,8 @@ class RegistrationController extends Controller
             'designation' => $request->designation,
             'event_id' => $event->id,
             'user_id' => auth()->id(),
+            'abstract' => $abstractPath,
+           
         ]);
 
         return redirect()->route('events.index')->with('success', 'Registration successful!');

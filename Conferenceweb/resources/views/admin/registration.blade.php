@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!-- this is event registration page where admin can see the list of all the registrations for the events -->
 <div class="container mx-auto p-4 sm:p-6 bg-white shadow-lg rounded-lg">
     <!-- Title & Filter Section -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-4">

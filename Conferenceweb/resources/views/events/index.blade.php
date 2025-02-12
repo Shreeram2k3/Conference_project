@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!-- this is the page where events are listed and the user can register for events here-->
     <p class="text-center text-gray-400 text-xs">
         Explore and register for exciting events!
     </p>
@@ -31,24 +33,28 @@
         <div x-show="showForm" x-transition.opacity class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96" @click.away="showForm = false">
                 <h2 class="text-xl font-semibold mb-4">Register for <span x-text="eventName"></span></h2>
-                <form method="POST" :action="'/events/' + eventId + '/register'">
+                <form method="POST" :action="'/events/' + eventId + '/register' "enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" name="name" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                     </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Email</label>
                         <input type="email" name="email" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                     </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Phone</label>
                         <input type="text" name="phone" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                     </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Institution</label>
                         <input type="text" name="institution" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                     </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Designation</label>
                         <select name="designation" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
@@ -58,6 +64,12 @@
                             <option value="AssProf/Prof">AssProf/Prof</option>
                         </select>
                     </div>
+
+                    <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Upload Abstract</label>
+                    <input type="file" name="abstract" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+                    </div>
+
                     <div class="flex justify-between mt-4">
                         <button type="button" @click="showForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
                         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Register</button>

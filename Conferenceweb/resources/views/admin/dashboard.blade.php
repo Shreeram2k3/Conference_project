@@ -2,6 +2,8 @@
 
 @section('content')
 
+    <!-- this is admin dashboard where admin can create and manage events  -->
+
   <p class="text-center text-gray-400 text-xs">
         Welcome to the <span class="font-semibold">{{ auth()->user()->userrole }} Dashboard!</span>.
   </p>
@@ -18,7 +20,7 @@
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold mb-4">Create Event</h2>
             
-            <form method="POST" action="{{ route('admin.events.store') }}">
+            <form method="POST" action="{{ route('admin.events.store') }}"enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Event Name</label>
@@ -35,6 +37,10 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">End Date</label>
                     <input type="date" name="end_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Upload Sample Paper</label>
+                    <input type="file" name="sample_paper" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
                 </div>
                 <div class="flex justify-between">
                     <button type="button" @click="showForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
@@ -75,7 +81,7 @@
     <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold mb-4">Edit Event</h2>
-            <form method="POST" :action="'/admin/events/' + editData.id">
+            <form method="POST" :action="'/admin/events/' + editData.id" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
@@ -93,6 +99,11 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">End Date</label>
                     <input type="date" name="end_date" x-model="editData.end_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Upload New Sample Paper</label>
+                    <input type="file" name="sample_paper" class="mt-1 p-2 w-full border rounded-lg">
+                    
                 </div>
                 <div class="flex justify-between">
                     <button type="button" @click="showEditForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
