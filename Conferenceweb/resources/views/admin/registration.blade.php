@@ -61,6 +61,7 @@
                     <th class="py-3 px-4 border"><i class="fas fa-briefcase"></i> Designation</th>
                     <th class="py-3 px-4 border"><i class="fas fa-calendar-alt"></i> Event</th>
                     <th class="py-3 px-4 border"><i class="fas fa-clock"></i> Registered At</th>
+                    <th class="py-3 px-4 border"> Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -74,6 +75,31 @@
                     <td class="py-3 px-4 border">{{ $registration->designation ?? 'N/A' }}</td>
                     <td class="py-3 px-4 border">{{ $registration->event->event_name }}</td>
                     <td class="py-3 px-4 border">{{ $registration->created_at->format('d M Y, H:i A') }}</td>
+                    
+                    <td class="py-3 px-4 border text-center">
+                        <div class="flex bg-gray-100 rounded-lg overflow-hidden">
+                            <!-- Send Email Icon  -->
+                            <a href="#" class="p-2 bg-cyan-500 text-white hover:bg-cyan-600 transition rounded-l-lg">
+                                <i class="fas fa-paper-plane"></i>
+                            </a>
+
+                            <!-- Generate Certificate Icon  -->
+                            <a href="#" class="p-2 bg-green-700 text-white hover:bg-green-800 transition">
+                                <i class="fas fa-graduation-cap"></i>
+                            </a>
+                            <!-- Edit icon  -->
+                            <a href="#" class = "p-2 bg-stone-700 text-white hover:bg-stone-900 transition">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+
+                            <!-- Delete Icon -->
+                            <a href="#" class="p-2 bg-red-500 text-white hover:bg-red-600 transition rounded-r-lg">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+
+
                 </tr>
                 @endforeach
             </tbody>
