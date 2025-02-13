@@ -25,8 +25,9 @@ class EventController extends Controller
         
         // Fetch registrations only for this event
         $registrations = Registration::where('event_id', $event->id)->get();
+        $events = Event::all();
     
-        return view('events.show', compact('event', 'timelines', 'registrations'));
+        return view('events.show', compact('event', 'timelines', 'registrations', 'events'));
     }
     
 

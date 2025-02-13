@@ -40,6 +40,14 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     
    
     Route::get('/admin/registration', [EventController::class, 'registration'])->name('admin.registration');
+    // Route::put('/registrations/{registration}', [RegistrationController::class, 'update'])->name('registrations.update');
+    Route::delete('/registrations/{registration}', [RegistrationController::class, 'destroy'])->name('registrations.destroy');
+    Route::get('/registrations/{id}/edit', [RegistrationController::class, 'edit'])->name('registrations.edit');
+    Route::put('/admin/registrations/{id}', [RegistrationController::class, 'update'])->name('admin.registrations.update');
+    
+
+
+    
 
 
 
@@ -49,6 +57,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/admin/events/{event}/edit', [EventController::class, 'edit'])->name('admin.events.edit');
     Route::put('/admin/events/{event}', [EventController::class, 'update'])->name('admin.events.update');
     Route::delete('/admin/events/{event}', [EventController::class, 'destroy'])->name('admin.events.destroy');
+    Route::delete('/admin/registration/{registration}', [RegistrationController::class, 'destroy'])->name('admin.registrations.destroy');
+
 });
 
 // Logout
@@ -61,6 +71,8 @@ Route::post('/logout', function () {
 Route::post('/events/{event}/timelines', [TimelineController::class, 'store'])->name('timelines.store');
 Route::put('/timelines/{timeline}', [TimelineController::class, 'update'])->name('timelines.update');
 Route::delete('/timelines/{timeline}', [TimelineController::class, 'destroy'])->name('timelines.destroy');
+
+
 
 
 

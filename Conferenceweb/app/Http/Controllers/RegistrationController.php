@@ -32,7 +32,7 @@ class RegistrationController extends Controller
         }
 
 
-        Registration::create([
+        $registration= Registration::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'email' => $request->email,
@@ -44,6 +44,39 @@ class RegistrationController extends Controller
            
         ]);
 
+        $registration->notify(new \App\Notifications\confirmation_mail());
+
+
         return redirect()->route('events.index')->with('success', 'Registration successful!');
     }
+
+    public function update(Request $request, $id)
+{
+    $registration = Registration::findOrFail($id);
+
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'nullable|string|max:20',
+        'institution' => 'nullable|string|max:255',
+        'designation' => 'nullable|string|max:255',
+        'event_id' => 'required|exists:events,id',
+    ]);
+
+    $registration->update($validatedData);
+
+    return redirect()->route('admin.registration')->with('success', 'Registration updated successfully.');
+}
+
+    
+
+    
+    public function destroy(Registration $registration)
+    {
+        $registration->delete();
+        return redirect()->back()->with('success', 'Registration deleted successfully.');
+    }
+
+   
+    
 }
