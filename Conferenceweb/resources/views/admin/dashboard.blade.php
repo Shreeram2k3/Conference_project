@@ -10,10 +10,17 @@
 
   <div class="mt-10" x-data="{ showForm: false, showEditForm: false, editData: {} }">
     <!-- Create Event Card -->
-    <a @click="showForm = true" class="bg-white shadow-md rounded-lg p-4 w-60 h-60 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 cursor-pointer hover:bg-gray-100 transition">
-        <div class="text-5xl text-gray-600">+</div>
-        <p class="mt-4 text-gray-600 text-center">Create Event</p>
-    </a>
+    <section class="relative mt-10 w-full  p-10 ">
+    <div @click="showForm = !showForm" 
+         class="fixed mt-10 top-[calc(4rem+1rem)] right-8 bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-2xl cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg transform ease-in-out" 
+         :class="{'rotate-45': showForm}" 
+         title="Create Event">
+        <span>+</span>
+    </div>
+</section>
+
+
+
 
      
 
