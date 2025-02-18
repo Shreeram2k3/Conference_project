@@ -63,13 +63,13 @@
             <thead class="bg-gray-200 text-gray-700 uppercase text-left sticky top-0">
                 <tr>
                     <th class="py-3 text-center px-4 border">Sno</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-user"></i> Name</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-envelope"></i> Email</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-phone"></i> Phone</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-university"></i> Institution</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-briefcase"></i> Designation</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-calendar-alt"></i> Event</th>
-                    <th class="py-3 text-center px-4 border"><i class="fas fa-clock"></i> Registered At</th>
+                    <th class="py-3 text-center px-4 border"> Name</th>
+                    <th class="py-3 text-center px-4 border"></i> Email</th>
+                    <th class="py-3 text-center px-4 border"> Phone</th>
+                    <th class="py-3 text-center px-4 border"> Institution</th>
+                    <th class="py-3 text-center px-4 border">Designation</th>
+                    <th class="py-3 text-center px-4 border"> Event</th>
+                    <th class="py-3 text-center px-4 border">Registered At</th>
                     <th class="py-3 text-center px-4 border"> Actions</th>
                 </tr>
             </thead>

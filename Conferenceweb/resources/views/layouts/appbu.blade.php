@@ -36,7 +36,7 @@
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-gray-700 p-5 w-full fixed top-0 z-50 px-6">
+    <nav class="bg-gray-700 p-5 w-full fixed top-0 z-50 pr-0">
         
         <div class="container mx-4 flex justify-between items-center">
             <!-- <a href="/dashboard" class="text-white text-xl font-bold">Conference</a> -->
@@ -55,36 +55,15 @@
             </button>
 
             
-            <div x-data="{ open: false }" class="relative hidden sm:flex justify-end w-full ">
-
-            <!-- Profile Section -->
-            <div @click="open = !open" class="flex items-center space-x-2 cursor-pointer">
-                <!-- Profile Icon with First Letter -->
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                
-                <!-- Username & Dropdown Icon -->
-                <div class="flex items-center space-x-1">
-                    <span class="text-white font-thin">{{ auth()->user()->name }}</span>
-                    <!-- Dropdown Icon -->
-                    <svg class="w-4 h-4 text-white transition-transform duration-200" :class="open ? 'rotate-180' : 'rotate-0'" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
+            <div x-data="{ open: false }" class="relative flex justify-end w-full ">
+            <!-- Profile Icon -->
+            <div @click="open = !open" class="w-8 h-8 rounded-full flex items-center justify-center text-white text-lg font-semibold cursor-pointer bg-blue-500">
+                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
             </div>
 
-
             <!-- Profile Dropdown (Desktop) -->
-            <div x-show="open" 
-                @click.away="open = false"
-                x-transition:enter="transition ease-out duration-200 transform"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-150 transform"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="absolute right-0 top-full mt-5 w-48 shadow-lg bg-gray-900 text-white shadow-lg rounded-lg py-2 z-50 border border-gray-700">
+            <div x-show="open" @click.away="open = false"
+                class="absolute right-0 mt-2 w-60 bg-gray-900 text-white shadow-lg rounded-lg py-2 z-50 border border-gray-700">
                 
                 <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
                     <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,36 +141,15 @@
     </ul>
     
 
-    <div x-data="{ open: false }" class="sm:hidden fixed bottom-4 left-4 w-full">
-
-    <!-- Profile Section (Click to Toggle) -->
-    <div @click="open = !open" class="flex items-center space-x-2 cursor-pointer">
-        <!-- Profile Icon -->
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
-            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-        </div>
-        
-        <!-- Username & Dropdown Icon -->
-        <div class="flex items-center space-x-1">
-            <span class="text-white font-thin">{{ auth()->user()->name }}</span>
-            <svg class="w-4 h-4 text-white transition-transform duration-300 ease-in-out"
-                 :class="open ? 'rotate-180' : 'rotate-0'" 
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-        </div>
+    <div x-data="{ open: false }" class="absolute bottom-4 left-4 md:hidden">
+    <!-- Profile Icon -->
+    <div @click="open = !open" class="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-semibold cursor-pointer bg-blue-600">
+        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
     </div>
 
-    <!-- Drop-Up Menu -->
-    <div x-show="open" 
-         @click.away="open = false"
-         x-transition:enter="transition ease-out duration-200 transform"
-         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-150 transform"
-         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-         class="absolute bottom-full mb-4 left-0 w-50 bg-gray-900 text-white shadow-lg rounded-lg py-2 z-50 border border-gray-700">
+    <!-- Profile Drop-up (Mobile) -->
+    <div x-show="open" @click.away="open = false"
+        class="absolute bottom-16 left-0 w-60 bg-gray-900 text-white shadow-lg rounded-lg py-2 z-50 border border-gray-700">
         
         <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
             <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +159,7 @@
         </a>
         <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-800 transition">
             <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4h4m-2-2v4m0 14v-4m-7-7h4m0 0v4m0-4h4m0 0v4m0-4h4m0 0v4m0-4h4m0 0v4m0-4h4m0 0v4"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4h4m-2-2v4m0 14v-4m-7-7h4m0 0v4m0-4h4m0 0v4m0-4h4m0 0v4m0-4h4m0 0v4"></path>
             </svg>
             <span class="text-sm">Profile Settings</span>
         </a>
@@ -219,14 +177,13 @@
 </div>
 
 
-
 </aside>
 
 
 
 
         <!-- Main Content -->
-        <main class="content p-6 bg-white ">
+        <main class="content p-6 ">
             @yield('content')
         </main>
     </div>

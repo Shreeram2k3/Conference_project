@@ -104,10 +104,16 @@ class EventController extends Controller
             'location' => 'nullable|string|max:255',
             'max_participants' => 'nullable|integer|min:1',
             'sample_paper' => 'nullable|file|mimes:doc,docx|max:2048',
+            'category' => 'required|in:National,International', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('sample_paper')) {
             $validated['sample_paper'] = $request->file('sample_paper')->store('sample_papers', 'public');
+        }
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('event_images', 'public');
         }
     
         Event::create($validated); 
@@ -115,41 +121,44 @@ class EventController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Event created successfully.');
     }
 
+
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'event_name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-    ]);
+    {
+        $event = Event::findOrFail($id);
 
-    $event = Event::findOrFail($id);
-    $event->update([
-        'event_name' => $request->event_name,
-        'description' => $request->description,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'sample_paper' => 'nullable|file|mimes:doc,docx|max:2048',
-    ]);
+        $validated = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'category' => 'required|in:National,International',
+            'sample_paper' => 'nullable|file|mimes:doc,docx|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $event = Event::findOrFail($id);
-
-    $data = $request->only(['event_name', 'description', 'start_date', 'end_date']);
-
-    if ($request->hasFile('sample_paper')) {
-        // Delete old file if exists
-        if ($event->sample_paper) {
-            Storage::disk('public')->delete($event->sample_paper);
+        // Handle sample paper update
+        if ($request->hasFile('sample_paper')) {
+            // Delete old file if exists
+            if ($event->sample_paper) {
+                Storage::disk('public')->delete($event->sample_paper);
+            }
+            $validated['sample_paper'] = $request->file('sample_paper')->store('sample_papers', 'public');
         }
 
-        $data['sample_paper'] = $request->file('sample_paper')->store('sample_papers', 'public');
+        // Handle image update
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+            $validated['image'] = $request->file('image')->store('event_images', 'public');
+        }
+
+        // Update event details
+        $event->update($validated);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Event updated successfully.');
     }
-
-    $event->update($data);
-
-    return redirect()->route('admin.dashboard')->with('success', 'Event updated successfully.');
-}
 
 
 public function registration(Request $request)

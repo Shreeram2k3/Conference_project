@@ -15,6 +15,8 @@
         <p class="mt-4 text-gray-600 text-center">Create Event</p>
     </a>
 
+     
+
     <!-- Floating Create Form Modal -->
     <div x-show="showForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -22,26 +24,52 @@
             
             <form method="POST" action="{{ route('admin.events.store') }}"enctype="multipart/form-data">
                 @csrf
+                <!-- eventname  -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Event Name</label>
                     <input type="text" name="event_name" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                 </div>
+
+                <!-- description  -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea name="description" rows="3" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required></textarea>
                 </div>
+
+                   <!-- category  -->
+                   <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category" required class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+                    <option value="National">National</option>
+                    <option value="International">International</option>
+                   </select>
+                </div>
+
+                    <!-- event image -->
+                     <div class="mb-4">
+                         <label class="block text-sm font-medium text-gray-700">Upload Event Image</label>
+                         <input type="file" name="image" class="mt-1 p-2 w-full border rounded-lg">
+                     </div>
+
+                     <!-- startdate  -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Start Date</label>
                     <input type="date" name="start_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                 </div>
+
+                <!-- enddate  -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">End Date</label>
                     <input type="date" name="end_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                 </div>
+
+                <!-- samplepaper  -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Upload Sample Paper</label>
                     <input type="file" name="sample_paper" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
                 </div>
+
+                <!-- cancel save btns  -->
                 <div class="flex justify-between">
                     <button type="button" @click="showForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Save</button>
@@ -52,15 +80,45 @@
 
     <!-- Event Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 px-4 md:px-0">
-        @foreach ($events as $event)
-          <div class="relative bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center border-2 border-gray-400 cursor-pointer hover:bg-gray-100 transition">
+    @foreach ($events as $event)
+
+    <!-- Event Card -->
+    <a href="{{ route('events.show', $event->id) }}" >
+
+        <div class="relative group rounded-xl overflow-hidden shadow-lg cursor-pointer transition-transform hover:scale-105">
+            <!-- Background Image -->
+            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->event_name }}" 
+                class="w-full h-60 object-cover transition-transform group-hover:scale-105 duration-300">
+            
+            <!-- Dark Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+    
+            <!-- Event Category Badge -->
+            <span class="absolute top-4 left-0 px-5 py-2 text-xs font-semibold text-black
+                {{ $event->category == 'International' ? 'bg-lime-500' : ($event->category == 'National' ? 'bg-orange-500' : 'bg-blue-500') }}
+                rounded-tr-lg rounded-br-lg">
+                {{ $event->category }}
+            </span>
+    
+            <!-- Event Info -->
+            <div class="absolute bottom-4 left-4 text-white">
+                <h3 class="text-lg font-bold">{{ $event->event_name }}</h3>
+                
+                <p class="text-sm">
+                {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }} - 
+                {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}
+                </p>
+
+
+                
+            </div>
+    
+            <!-- Edit & Delete Buttons -->
             <div class="absolute top-3 right-3 flex space-x-3">
-                <!-- Edit Icon -->
-                <button @click="showEditForm = true; editData = { id: {{ $event->id }}, event_name: '{{ $event->event_name }}', description: '{{ $event->description }}', start_date: '{{ $event->start_date }}', end_date: '{{ $event->end_date }}' }" class="text-blue-500 hover:text-blue-700">
-                    <i class="fas fa-pen"></i>
+                <button @click="showEditForm = true; editData = { id: {{ $event->id }}, event_name: '{{ $event->event_name }}', description: '{{ $event->description }}', start_date: '{{ $event->start_date }}', end_date: '{{ $event->end_date }}' }" class="text-white hover:text-gray-300">
+                    <i class="fas fa-pen text-blue-500"></i>
                 </button>
-                <!-- Delete Icon -->
-                <form method="POST" action="{{ route('admin.events.destroy', $event->id) }}" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                <form method="POST" action="{{ route('admin.events.destroy', $event->id) }}" onsubmit="return confirm('Are you sure?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-red-500 hover:text-red-700">
@@ -68,14 +126,12 @@
                     </button>
                 </form>
             </div>
-            <h3 class="text-xl font-semibold text-gray-800">{{ $event->event_name }}</h3>
-            <p class="mt-2 text-gray-600 text-center">{{ Str::limit($event->description, 100) }}</p>
-            <p class="mt-4 text-gray-500 text-sm">Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
-            <p class="text-gray-500 text-sm">End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
-            <a href="{{ route('events.show', $event->id) }}" class="mt-4 text-blue-500">View Event</a>
-          </div>
-        @endforeach
-    </div>
+        </div>
+    </a>
+
+    @endforeach
+</div>
+
 
     <!-- Floating Edit Form Modal -->
     <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -92,6 +148,23 @@
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea name="description" rows="3" x-model="editData.description" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required></textarea>
                 </div>
+                
+                    <!-- category  -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category" required class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
+                    <option value="National">National</option>
+                    <option value="International">International</option>
+                   </select>
+                </div>
+
+                    <!-- event image -->
+                     <div class="mb-4">
+                         <label class="block text-sm font-medium text-gray-700">Upload Event Image</label>
+                         <input type="file" name="image" class="mt-1 p-2 w-full border rounded-lg">
+                     </div>
+
+
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Start Date</label>
                     <input type="date" name="start_date" x-model="editData.start_date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
