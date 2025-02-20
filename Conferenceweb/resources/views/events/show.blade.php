@@ -38,7 +38,7 @@
             <h2 class="text-2xl font-semibold">Paper Format</h2>
 
         </div>
-        <div class="mt-6 ">
+     <div class="mt-6 ">
             
         <!-- <button onclick="document.getElementById('previewFrame').src='{{ Storage::url($event->sample_paper) }}'; document.getElementById('previewContainer').classList.remove('hidden');" 
                     class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
@@ -64,139 +64,179 @@
     @endif
 
     <!-- Timeline Section -->
-    <div class="mt-10" x-data="{ showEditForm: false, editData: { id: '', title: '', description: '', date: '' } }" >
-        <h2 class="text-2xl font-semibold">Event Timeline</h2>
+    <div class="mt-10" x-data="{ showEditForm: false, showForm: false, editData: { id: '', title: '', description: '', date: '' } }">
+    <h2 class="text-3xl font-semibold text-gray-800">Event Timeline</h2>
 
-        <!-- Display existing timelines -->
-        <div class="mt-6 space-y-4">
-            @forelse ($timelines as $timeline)
-                <div class="bg-white shadow-md rounded-lg p-4 border border-gray-300 relative">
-                    <!-- Icons Positioned at the Top-Right Corner -->
-                    <div class="absolute top-3 right-3 flex space-x-3">
-                        <!-- Edit Icon -->
-                        <button @click="showEditForm = true; editData = { 
-                            id: {{ $timeline->id }}, 
-                            title: '{{ $timeline->title }}', 
-                            description: '{{ $timeline->description }}', 
-                            date: '{{ $timeline->date }}' 
-                        }" class="text-blue-500 hover:text-blue-700">
-                            <i class="fas fa-pen"></i>
-                        </button>
+    <!-- Display existing timelines -->
+    <div>
+        <!-- Modern Timeline Display with Advanced Animations -->
+        <div class="relative mt-10">
+            <!-- Extended Vertical Line for Desktop -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-blue-500 to-indigo-600 border-dashed animate-pulse hidden md:block"></div>
 
-                        <!-- Delete Icon -->
-                        <form method="POST" action="{{ route('timelines.destroy', $timeline->id) }}" onsubmit="return confirm('Are you sure you want to delete this timeline?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+            <!-- Timeline Items -->
+            <div class="space-y-32">
+                @forelse ($timelines as $index => $timeline)
+                    <div class="relative flex flex-col items-start w-full opacity-0 translate-y-20 scale-90 transition-all duration-1000 ease-out delay-[{{ $index * 200 }}ms] md:flex-row md:items-center" data-aos="fade-up" data-parallax>
+                        <!-- Timeline Indicator with Hover Animation -->
+                        <div class="w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white text-lg font-bold animate-bounce hover:scale-110 transition-transform duration-300 md:absolute md:{{ $index % 2 == 0 ? 'left-auto right-[calc(50%-1.5rem)]' : 'right-auto left-[calc(50%-1.5rem)]' }}">
+                            {{ $index + 1 }}
+                        </div>
+
+                        <!-- Full-Width Timeline Card for Mobile, Alternating in Desktop -->
+                        <div class="w-full p-6 bg-white shadow-2xl rounded-xl relative flex flex-col items-start transition-all duration-500 transform hover:scale-105 hover:shadow-3xl md:w-5/12 md:{{ $index % 2 == 0 ? 'ml-auto text-right border-l-4 ' : 'mr-auto text-left border-r-4 ' }}">
+                            <!-- Card Header with Icon -->
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-flag text-blue-600 text-2xl"></i>
+                                <h3 class="text-2xl font-bold text-gray-900">{{ $timeline->title }}</h3>
+                            </div>
+                            
+                            <p class="text-gray-700 mt-3 leading-relaxed text-lg">{{ $timeline->description }}</p>
+                            <p class="text-sm text-gray-500 mt-2 font-medium italic">{{ \Carbon\Carbon::parse($timeline->date)->format('M d, Y') }}</p>
+                            
+                            <!-- Edit & Delete Buttons with Smooth Hover Effects -->
+                            <div class="flex space-x-6 mt-6 self-end">
+                                <button @click="showEditForm = true; editData = { id: {{ $timeline->id }}, title: '{{ $timeline->title }}', description: '{{ $timeline->description }}', date: '{{ $timeline->date }}' }" class="text-blue-600 hover:text-blue-800 transition-transform hover:scale-125">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <form method="POST" action="{{ route('timelines.destroy', $timeline->id) }}" onsubmit="return confirm('Are you sure you want to delete this timeline?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700 transition-transform hover:scale-125">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                @empty
+                    <p class="text-center text-gray-500">No timeline added yet.</p>
+                @endforelse
 
-                    <h3 class="text-xl font-semibold">{{ $timeline->title }}</h3>
-                    <p>{{ $timeline->description }}</p>
-                    <p class="text-sm text-gray-500">Date: {{ \Carbon\Carbon::parse($timeline->date)->format('M d, Y') }}</p>
+                <!-- Add New Timeline Button at the End -->
+                <div class="relative flex items-center w-full mt-32">
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300" @click="showForm = true">
+                        <i class="fas fa-plus text-white text-4xl"></i>
+                    </div>
                 </div>
-            @empty
-                <p class="text-gray-500">No timeline added yet.</p>
-            @endforelse
-        </div>
-
-        <!-- Add New Timeline -->
-        <div class="mt-10" x-data="{ showForm: {{ $errors->any() ? 'true' : 'false' }} }">
-            <button @click="showForm = true" class="bg-blue-500 text-white rounded-lg px-4 py-2">Add Timeline</button>
-
-            <!-- Floating Form Modal -->
-            <div x-show="showForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                    <h2 class="text-xl font-semibold mb-4">Add Event Timeline</h2>
-
-                    <form method="POST" action="{{ route('timelines.store', $event->id) }}">
-                        @csrf
-
-                        <!-- Title -->
-                        <div class="mb-4">
-                            <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="mb-4">
-                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description" id="description" rows="3" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>{{ old('description') }}</textarea>
-                        </div>
-
-                            <!-- Event Date Constraints -->
-                        <p class="text-sm text-gray-500">Event Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
-                        <p class="text-sm text-gray-500 mb-4">Event End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
-
-                        
-                        <!-- Timeline Date -->
-                        <div class="mb-4">
-                            <label for="date" class="block text-sm font-medium text-gray-700">Timeline Date</label>
-                            <input type="date" name="date" id="date" value="{{ old('date') }}" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
-                        </div>
-
-                            @error('date')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-
-                        <!-- Buttons -->
-                        <div class="flex justify-between mt-4">
-                            <button type="button" @click="showForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Save Timeline</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Edit Form -->
-        <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 class="text-xl font-semibold mb-4">Edit Timeline</h2>
-
-                <form method="POST" :action="'/timelines/' + editData.id">
-                    @csrf
-                    @method('PUT')
-
-                    <!-- Title -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Title</label>
-                        <input type="text" name="title" x-model="editData.title" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea name="description" x-model="editData.description" rows="3" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required></textarea>
-                    </div>
-
-                         <!-- Event Date Constraints -->
-                         <p class="text-sm text-gray-500">Event Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
-                         <p class="text-sm text-gray-500 mb-4">Event End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
-
-
-                    <!-- Date -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Date</label>
-                        <input type="date" name="date" x-model="editData.date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
-                    </div>
-                            @error('date')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-
-                    <div class="flex justify-between mt-4">
-                        <button type="button" @click="showEditForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
-</div>
 
-<div x-data="{ showEditForm: false, editData: {} }">
+    <!-- Scroll Animations -->
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce { animation: bounce 1.5s infinite; }
+        .hover\:shadow-3xl:hover { box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.3); }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const elements = document.querySelectorAll("[data-aos]");
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.remove("opacity-0", "translate-y-20", "scale-90");
+                        entry.target.classList.add("opacity-100", "translate-y-0", "scale-100");
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(element => observer.observe(element));
+        });
+    </script>
+
+
+<!-- Floating Form Modal -->
+<div x-show="showForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl font-semibold mb-4">Add Event Timeline</h2>
+
+            <form method="POST" action="{{ route('timelines.store', $event->id) }}">
+                @csrf
+                
+                <!-- Title -->
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" id="description" rows="3" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>{{ old('description') }}</textarea>
+                </div>
+                
+                <!-- Event Date Constraints -->
+                <p class="text-sm text-gray-500">Event Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
+                <p class="text-sm text-gray-500 mb-4">Event End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
+                
+                <!-- Timeline Date -->
+                <div class="mb-4">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Timeline Date</label>
+                    <input type="date" name="date" id="date" value="{{ old('date') }}" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                
+                @error('date')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+
+                <!-- Buttons -->
+                <div class="flex justify-between mt-4">
+                    <button type="button" @click="showForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Save Timeline</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Form -->
+    <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-xl font-semibold mb-4">Edit Timeline</h2>
+            
+            <form method="POST" :action="'/timelines/' + editData.id">
+                @csrf
+                @method('PUT')
+                
+                <!-- Title -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" x-model="editData.title" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" x-model="editData.description" rows="3" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required></textarea>
+                </div>
+                
+                <!-- Event Date Constraints -->
+                <p class="text-sm text-gray-500">Event Start: {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</p>
+                <p class="text-sm text-gray-500 mb-4">Event End: {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}</p>
+                
+                <!-- Date -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" name="date" x-model="editData.date" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                </div>
+                
+                @error('date')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+
+                <div class="flex justify-between mt-4">
+                    <button type="button" @click="showEditForm = false" class="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
 
 <div class=" mt-16 container mx-auto p-6 bg-white shadow-lg rounded-lg">
     <!-- Title & Search Section -->
@@ -204,7 +244,7 @@
         <h2 class="text-xl sm:text-2xl font-semibold">
             <i class="fas fa-clipboard-list text-blue-500"></i> Registrations for "{{ $event->event_name }}"
         </h2>
-
+        
         <!-- Search Form -->
         <form method="GET" action="{{ route('admin.registration') }}" class="flex flex-col sm:flex-row gap-2">
             <!-- Keep event_id as hidden since the route handles event-specific data -->
@@ -353,6 +393,8 @@
             </form>
         </div>
     </div>
+
+    
 </div>
 
 
