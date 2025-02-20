@@ -58,81 +58,97 @@
     </div>
 
     <!-- Responsive Table Wrapper -->
-    <div class="overflow-x-auto rounded-lg shadow-md">
-        <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
-            <thead class="bg-gray-200 text-gray-700 uppercase text-left sticky top-0">
-                <tr>
-                    <th class="py-3 text-center px-4 border">Sno</th>
-                    <th class="py-3 text-center px-4 border"> Name</th>
-                    <th class="py-3 text-center px-4 border"></i> Email</th>
-                    <th class="py-3 text-center px-4 border"> Phone</th>
-                    <th class="py-3 text-center px-4 border"> Institution</th>
-                    <th class="py-3 text-center px-4 border">Designation</th>
-                    <th class="py-3 text-center px-4 border"> Event</th>
-                    <th class="py-3 text-center px-4 border">Registered At</th>
-                    <th class="py-3 text-center px-4 border"> Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @foreach($registrations as $index => $registration)
-                <tr class="border hover:bg-gray-100 transition">
-                    <td class="py-3 px-4 border">{{ $index + 1 }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->name }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->email }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->phone ?? 'N/A' }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->institution ?? 'N/A' }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->designation ?? 'N/A' }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->event->event_name }}</td>
-                    <td class="py-3 px-4 border">{{ $registration->created_at->format('d M Y, H:i A') }}</td>
-                    
-                    <td class="py-3 px-4 border text-center">
-                        <div class="flex rounded-lg overflow-hidden">
-                            <!-- Send Email Icon  -->
-                            <a href="#" class="p-2 bg-cyan-500 text-white hover:bg-cyan-600 transition rounded-l-lg">
-                                <i class="fas fa-paper-plane"></i>
-                            </a>
+    <div class="overflow-x-auto rounded-lg shadow-md" x-data="{ showModal: false, selectedRegistration: {} }" @click.away="showModal = false">
+    <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
+        <thead class="bg-gray-200 text-gray-700 uppercase text-center sticky top-0">
+            <tr>
+                <th class="py-3 px-4 border">Sno</th>
+                <th class="py-3 px-4 border">Name</th>
+                <th class="py-3 px-4 border">Email</th>
+                <th class="py-3 px-4 border">Phone</th>
+                <th class="py-3 px-4 border">Event</th>
+                <th class="py-3 px-4 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 text-center">
+            @foreach($registrations as $index => $registration)
+            <tr class="border hover:bg-gray-100 transition">
+                <td class="py-3 px-4 border">{{ $index + 1 }}</td>
+                <td class="py-3 px-4 border">{{ $registration->name }}</td>
+                <td class="py-3 px-4 border">{{ $registration->email }}</td>
+                <td class="py-3 px-4 border">{{ $registration->phone ?? 'N/A' }}</td>
+                <td class="py-3 px-4 border">{{ $registration->event->event_name }}</td>
 
-                            <!-- Generate Certificate Icon  -->
-                            <a href="#" class="p-2 bg-green-700 text-white hover:bg-green-800 transition">
-                                <i class="fas fa-graduation-cap"></i>
-                            </a>
+                <td class="py-3 px-4 border text-center">
+                    <div class="flex justify-center rounded-lg overflow-hidden">
+                        <!-- Send Email Icon -->
+                        <a href="#" class="p-2 bg-cyan-500 text-white hover:bg-cyan-600 transition rounded-l-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </a>
 
-                            <!-- Edit icon -->
-                            <button 
-                                @click="showEditForm = true; editData = { 
-                                    id: {{ $registration->id }}, 
-                                    name: '{{ $registration->name }}', 
-                                    email: '{{ $registration->email }}', 
-                                    phone: '{{ $registration->phone }}', 
-                                    institution: '{{ $registration->institution }}', 
-                                    designation: '{{ $registration->designation }}', 
-                                    event_id: '{{ $registration->event_id }}' 
-                                }" 
-                                class="p-2 bg-stone-700 text-white hover:bg-stone-900 transition">
-                                <i class="fa-solid fa-pen"></i>
+                        <!-- Generate Certificate Icon -->
+                        <a href="#" class="p-2 bg-green-700 text-white hover:bg-green-800 transition">
+                            <i class="fas fa-graduation-cap"></i>
+                        </a>
+
+                        <!-- View Icon (Opens Floating Card) -->
+                        <button 
+                            @click="selectedRegistration = {{ json_encode($registration) }}; showModal = true;"
+                            class="p-2 bg-indigo-700 text-white hover:bg-indigo-600 transition">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+
+                        <!-- Edit Icon -->
+                        <button 
+                            @click="showEditForm = true; editData = { 
+                                id: {{ $registration->id }}, 
+                                name: '{{ $registration->name }}', 
+                                email: '{{ $registration->email }}', 
+                                phone: '{{ $registration->phone }}', 
+                                institution: '{{ $registration->institution }}', 
+                                designation: '{{ $registration->designation }}', 
+                                event_id: '{{ $registration->event_id }}' 
+                            }" 
+                            class="p-2 bg-stone-700 text-white hover:bg-stone-900 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+
+                        <!-- Delete Icon -->
+                        <form method="POST" action="{{ route('admin.registrations.destroy', $registration->id) }}" 
+                              onsubmit="return confirm ('Are you sure you want to delete this registration?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="p-2 bg-red-500 text-white hover:bg-red-600 transition rounded-r-lg">
+                                <i class="fas fa-trash"></i>
                             </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-
-                            <!-- Delete Icon -->
-                            <form method="POST" action="{{ route('admin.registrations.destroy', $registration->id) }}" onsubmit="return confirm ('Are you sure you want to delete this registration?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="p-2 bg-red-500 text-white hover:bg-red-600 transition rounded-r-lg">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-
-
-
-                        </div>
-                    </td>
-
-
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <!-- Floating Card for Viewing Full Details -->
+    <div x-show="showModal" x-trap.noscroll="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div class="bg-white p-6 rounded-lg shadow-2xl w-96 transform transition-all scale-105">
+            <h2 class="text-2xl font-bold text-gray-900 border-b pb-2 mb-4">Registration Details</h2>
+            <div class="space-y-4 text-gray-700">
+                <p><strong class="text-gray-900">Name:</strong> <span x-text="selectedRegistration.name"></span></p>
+                <p><strong class="text-gray-900">Email:</strong> <span x-text="selectedRegistration.email"></span></p>
+                <p><strong class="text-gray-900">Phone:</strong> <span x-text="selectedRegistration.phone ?? 'N/A'"></span></p>
+                <p><strong class="text-gray-900">Institution:</strong> <span x-text="selectedRegistration.institution ?? 'N/A'"></span></p>
+                <p><strong class="text-gray-900">Designation:</strong> <span x-text="selectedRegistration.designation ?? 'N/A'"></span></p>
+                <p><strong class="text-gray-900">Event:</strong> <span x-text="selectedRegistration.event.event_name"></span></p>
+                <p><strong class="text-gray-900">Registered At:</strong> <span x-text="selectedRegistration.created_at"></span></p>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button @click="showModal = false" class="px-5 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition shadow-md">Close</button>
+            </div>
+        </div>
     </div>
+</div>
+
 </div>
 
     <!-- Floating Edit Form Modal -->
