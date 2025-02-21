@@ -130,23 +130,80 @@
     </table>
 
     <!-- Floating Card for Viewing Full Details -->
-    <div x-show="showModal" x-trap.noscroll="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div class="bg-white p-6 rounded-lg shadow-2xl w-96 transform transition-all scale-105">
-            <h2 class="text-2xl font-bold text-gray-900 border-b pb-2 mb-4">Registration Details</h2>
-            <div class="space-y-4 text-gray-700">
-                <p><strong class="text-gray-900">Name:</strong> <span x-text="selectedRegistration.name"></span></p>
-                <p><strong class="text-gray-900">Email:</strong> <span x-text="selectedRegistration.email"></span></p>
-                <p><strong class="text-gray-900">Phone:</strong> <span x-text="selectedRegistration.phone ?? 'N/A'"></span></p>
-                <p><strong class="text-gray-900">Institution:</strong> <span x-text="selectedRegistration.institution ?? 'N/A'"></span></p>
-                <p><strong class="text-gray-900">Designation:</strong> <span x-text="selectedRegistration.designation ?? 'N/A'"></span></p>
-                <p><strong class="text-gray-900">Event:</strong> <span x-text="selectedRegistration.event.event_name"></span></p>
-                <p><strong class="text-gray-900">Registered At:</strong> <span x-text="selectedRegistration.created_at"></span></p>
-            </div>
-            <div class="mt-6 flex justify-end">
-                <button @click="showModal = false" class="px-5 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition shadow-md">Close</button>
-            </div>
+    <style>
+    .transform.scale-95 {
+        animation: fadeIn 0.2s ease-out forwards;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<div x-show="showModal" x-trap.noscroll="showModal"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+    
+    <div class="bg-white p-6 rounded-lg shadow-2xl w-[480px] sm:w-[520px] transform scale-95">
+        
+        <h2 class="text-xl font-semibold text-gray-900 pb-3 mb-4 text-center border-b">
+            Registration Details
+        </h2>
+
+        <div class="rounded-lg overflow-hidden shadow-md bg-white border border-gray-200">
+            <table class="w-full rounded-lg">
+                <tbody class="divide-y divide-gray-300">
+                    <tr class="bg-gray-50">
+                        <td class="p-3 text-gray-800 font-medium w-1/3">Name</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200 w-2/3" x-text="selectedRegistration.name"></td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 text-gray-800 font-medium">Email</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.email"></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                        <td class="p-3 text-gray-800 font-medium">Phone</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.phone ?? 'N/A'"></td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 text-gray-800 font-medium">Institution</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.institution ?? 'N/A'"></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                        <td class="p-3 text-gray-800 font-medium">Designation</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.designation ?? 'N/A'"></td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 text-gray-800 font-medium">Event</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.event.event_name"></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                        <td class="p-3 text-gray-800 font-medium">Registered At</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" 
+                            x-text="new Date(selectedRegistration.created_at).toLocaleString('en-US', { 
+                                month: 'short', day: 'numeric', year: 'numeric', 
+                                hour: '2-digit', minute: '2-digit'
+                            })">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-5 flex justify-end">
+            <button @click="showModal = false" 
+                class="px-5 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition shadow-md">
+                Close
+            </button>
         </div>
     </div>
+</div>
+
 </div>
 
 </div>
