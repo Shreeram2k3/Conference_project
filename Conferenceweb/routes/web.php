@@ -44,6 +44,10 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::delete('/registrations/{registration}', [RegistrationController::class, 'destroy'])->name('registrations.destroy');
     Route::get('/registrations/{id}/edit', [RegistrationController::class, 'edit'])->name('registrations.edit');
     Route::put('/admin/registrations/{id}', [RegistrationController::class, 'update'])->name('admin.registrations.update');
+    Route::get('/admin/export', [RegistrationController::class, 'showExportedRegistrations'])->name('admin.export');
+    Route::get('/admin/export/pdf', [RegistrationController::class, 'export'])->name('admin.export.pdf');
+    
+
     
 
 

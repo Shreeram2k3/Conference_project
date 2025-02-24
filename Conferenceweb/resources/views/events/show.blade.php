@@ -40,17 +40,6 @@
         </div>
      <div class="mt-6 ">
             
-        <!-- <button onclick="document.getElementById('previewFrame').src='{{ Storage::url($event->sample_paper) }}'; document.getElementById('previewContainer').classList.remove('hidden');" 
-                    class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
-                Preview
-            </button>
-
-            <button onclick="document.getElementById('previewFrame').src='https://docs.google.com/gview?url={{ Storage::url($event->sample_paper) }}&embedded=true'; document.getElementById('previewContainer').classList.remove('hidden');" 
-        class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
-        Preview
-    </button> -->
-
-            
             <a href="{{Storage::url($event->sample_paper) }}" target="_blank"
             class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
             
@@ -150,7 +139,7 @@
     </script>
 
 
-<!-- Floating Form Modal -->
+<!-- Add Timelines Form Modal -->
 <div x-show="showForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold mb-4">Add Event Timeline</h2>
@@ -193,7 +182,7 @@
         </div>
     </div>
     
-    <!-- Edit Form -->
+    <!-- Edit Timelines Form -->
     <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold mb-4">Edit Timeline</h2>
@@ -238,19 +227,27 @@
 </div>
 </div>
 
-<div class=" mt-16 container mx-auto p-6 bg-white shadow-lg rounded-lg">
+
+<div class="mt-16 container mx-auto p-6 bg-white shadow-lg rounded-lg" 
+     x-data="{ showModal: false, selectedRegistration: {}, showEditForm: false, editData: {}, showExportModal: false }">
+
+
+    
     <!-- Title & Search Section -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
         <h2 class="text-xl sm:text-2xl font-semibold">
             <i class="fas fa-clipboard-list text-blue-500"></i> Registrations for "{{ $event->event_name }}"
         </h2>
         
+        <!-- export registrations  -->
+        <button @click="showExportModal = true" 
+        class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
+            📄 Export PDF
+        </button>
+
         <!-- Search Form -->
         <form method="GET" action="{{ route('admin.registration') }}" class="flex flex-col sm:flex-row gap-2">
-            <!-- Keep event_id as hidden since the route handles event-specific data -->
             <input type="hidden" name="event_id" value="{{ $event->id }}">
-
-            <!-- Search Input -->
             <div class="relative">
                 <input 
                     type="text" 
@@ -261,53 +258,54 @@
                 >
                 <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
             </div>
-
-            <!-- Search Button -->
             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center">
                 <i class="fas fa-search mr-2"></i> Search
             </button>
         </form>
     </div>
-
+    
     <!-- Responsive Table -->
     <div class="overflow-x-auto rounded-lg shadow-md">
         <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
-            <thead class="bg-gray-200 text-gray-700 uppercase text-left">
+            <thead class="bg-gray-200 text-gray-700 uppercase text-center sticky top-0">
                 <tr>
                     <th class="py-3 px-4 border">Sno</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-user"></i> Name</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-envelope"></i> Email</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-phone"></i> Phone</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-university"></i> Institution</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-briefcase"></i> Designation</th>
-                    <th class="py-3 px-4 border"><i class="fas fa-clock"></i> Registered At</th>
-                    <th class="py-3 px-4 border"> Actions</th>
+                    <th class="py-3 px-4 border">Name</th>
+                    <th class="py-3 px-4 border">Email</th>
+                    <th class="py-3 px-4 border">Phone</th>
+                    <th class="py-3 px-4 border">Event</th>
+                    <th class="py-3 px-4 border">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse($registrations as $index => $registration)
-                    <tr class="border hover:bg-gray-100 transition">
-                        <td class="py-3 px-4 border">{{ $index + 1 }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->name }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->email }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->phone ?? 'N/A' }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->institution ?? 'N/A' }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->designation ?? 'N/A' }}</td>
-                        <td class="py-3 px-4 border">{{ $registration->created_at->format('d M Y, H:i A') }}</td>
-
-                        <td class="py-3 px-4 border text-center">
+            <tbody class="divide-y divide-gray-200 text-center">
+                @foreach($registrations as $index => $registration)
+                <tr class="border hover:bg-gray-100 transition">
+                    <td class="py-3 px-4 border">{{ $index + 1 }}</td>
+                    <td class="py-3 px-4 border">{{ $registration->name }}</td>
+                    <td class="py-3 px-4 border">{{ $registration->email }}</td>
+                    <td class="py-3 px-4 border">{{ $registration->phone ?? 'N/A' }}</td>
+                    <td class="py-3 px-4 border">{{ $registration->event->event_name }}</td>
+                    <td class="py-3 px-4 border text-center">
                         <div class="flex justify-center rounded-lg overflow-hidden">
-                            <!-- Send Email Icon  -->
+                            <!-- Send Email Icon -->
                             <a href="#" class="p-2 bg-cyan-500 text-white hover:bg-cyan-600 transition rounded-l-lg">
                                 <i class="fas fa-paper-plane"></i>
                             </a>
 
-                            <!-- Generate Certificate Icon  -->
+                            <!-- Generate Certificate Icon -->
                             <a href="#" class="p-2 bg-green-700 text-white hover:bg-green-800 transition">
                                 <i class="fas fa-graduation-cap"></i>
                             </a>
-                           <!-- Edit icon -->
-                           <button 
+
+                            <!-- View Icon (Opens Floating Card) -->
+                            <button 
+                                @click="selectedRegistration = {{ json_encode($registration) }}; showModal = true;"
+                                class="p-2 bg-indigo-700 text-white hover:bg-indigo-600 transition">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+
+                            <!-- Edit Icon -->
+                            <button 
                                 @click="showEditForm = true; editData = { 
                                     id: {{ $registration->id }}, 
                                     name: '{{ $registration->name }}', 
@@ -322,7 +320,8 @@
                             </button>
 
                             <!-- Delete Icon -->
-                            <form method="POST" action="{{ route('admin.registrations.destroy', $registration->id) }}" onsubmit="return confirm ('Are you sure you want to delete this registration?');">
+                            <form method="POST" action="{{ route('admin.registrations.destroy', $registration->id) }}" 
+                                  onsubmit="return confirm('Are you sure you want to delete this registration?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="p-2 bg-red-500 text-white hover:bg-red-600 transition rounded-r-lg">
@@ -331,18 +330,107 @@
                             </form>
                         </div>
                     </td>
-
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-500">No registrations found.</td>
-                    </tr>
-                @endforelse
+                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
+
+    <!-- Export PDF Modal -->
+<div x-show="showExportModal" x-cloak class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h3 class="text-lg font-semibold mb-4">Export Registrations</h3>
+
+        <form method="GET" action="{{ route('admin.export')  }}">
+            <input type="hidden" name="event_id" value="{{ $event->id }}">
+
+            <!-- Registrations Per Slot -->
+            <label class="block text-sm font-medium mb-1">Registrations per Slot:</label>
+            <input type="number" name="slot_size" required 
+                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+
+            <!-- Online/Offline Selection -->
+            <label class="block text-sm font-medium mt-4 mb-1">Mode:</label>
+            <select name="mode" required 
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+                <!-- <option value="both">Both</option>  -->
+            </select>
+
+            <!-- Submit Button -->
+            <div class="mt-4 flex justify-end">
+                <button type="button" @click="showExportModal = false" 
+                        class="px-4 py-2 bg-gray-300 rounded-lg mr-2">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    Proceed
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
- 
+
+    <!-- Floating Card for Viewing Full Details -->
+    <div x-show="showModal" x-trap.noscroll="showModal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div class="bg-white p-6 rounded-lg shadow-2xl w-[480px] sm:w-[520px] transform scale-95">
+            <h2 class="text-xl font-semibold text-gray-900 pb-3 mb-4 text-center border-b">
+                Registration Details
+            </h2>
+            <div class="rounded-lg overflow-hidden shadow-md bg-white border border-gray-200">
+                <table class="w-full rounded-lg">
+                    <tbody class="divide-y divide-gray-300">
+                        <tr class="bg-gray-50">
+                            <td class="p-3 text-gray-800 font-medium w-1/3">Name</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200 w-2/3" x-text="selectedRegistration.name"></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-gray-800 font-medium">Email</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.email"></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-3 text-gray-800 font-medium">Phone</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.phone ?? 'N/A'"></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-gray-800 font-medium">Institution</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.institution ?? 'N/A'"></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-3 text-gray-800 font-medium">Designation</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.designation ?? 'N/A'"></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-gray-800 font-medium">Event</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.event.event_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-gray-800 font-medium">Mode</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.mode"></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="p-3 text-gray-800 font-medium">Registered At</td>
+                            <td class="p-3 text-gray-700 border-l border-gray-200" 
+                                x-text="new Date(selectedRegistration.created_at).toLocaleString('en-US', { 
+                                    month: 'short', day: 'numeric', year: 'numeric', 
+                                    hour: '2-digit', minute: '2-digit'
+                                })">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button @click="showModal = false" 
+                    class="px-5 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition shadow-md">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Floating Edit Form Modal -->
     <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
@@ -393,11 +481,7 @@
             </form>
         </div>
     </div>
-
-    
 </div>
-
-
     
 
 @endsection

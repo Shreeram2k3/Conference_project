@@ -19,6 +19,14 @@
             <i class="fas fa-clipboard-list text-blue-500"></i> Event Registrations
         </h2>
 
+        <!-- export registrations  -->
+        <a href="#" target="_blank"
+            class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
+            
+                📄Export pdf
+            </a>
+
+
         <!-- Search & Filter Form -->
         <form method="GET" action="{{ route('admin.registration') }}" class="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
             <!-- Search Input -->
@@ -183,6 +191,10 @@
                         <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.event.event_name"></td>
                     </tr>
                     <tr class="bg-gray-50">
+                        <td class="p-3 text-gray-800 font-medium">Mode</td>
+                        <td class="p-3 text-gray-700 border-l border-gray-200" x-text="selectedRegistration.mode"></td>
+                    </tr>   
+                    <tr class="bg-gray-50">
                         <td class="p-3 text-gray-800 font-medium">Registered At</td>
                         <td class="p-3 text-gray-700 border-l border-gray-200" 
                             x-text="new Date(selectedRegistration.created_at).toLocaleString('en-US', { 
@@ -208,7 +220,7 @@
 
 </div>
 
-    <!-- Floating Edit Form Modal -->
+    <!-- Floating Edit registration Form Modal -->
     <div x-show="showEditForm" x-transition class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold mb-4">Edit Registration</h2>
@@ -235,6 +247,15 @@
                     <label class="block text-sm font-medium text-gray-700">Institution</label>
                     <input type="text" name="institution" x-model="editData.institution" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300">
                 </div>
+
+                  <!-- regmode -->
+                  <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Mode</label>
+                            <select name="mode" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                             </select>
+                    </div>
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Designation</label>

@@ -54,6 +54,14 @@
                         <label class="block text-sm font-medium text-gray-700">Institution</label>
                         <input type="text" name="institution" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
                     </div>
+                        <!-- regmode -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Mode</label>
+                            <select name="mode" class="mt-1 p-2 w-full border rounded-lg focus:ring focus:ring-blue-300" required>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                             </select>
+                    </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Designation</label>
