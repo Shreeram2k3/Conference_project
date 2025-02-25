@@ -7,6 +7,9 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\Admin\CommitteeMemberController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +49,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::put('/admin/registrations/{id}', [RegistrationController::class, 'update'])->name('admin.registrations.update');
     Route::get('/admin/export', [RegistrationController::class, 'showExportedRegistrations'])->name('admin.export');
     Route::get('/admin/export/pdf', [RegistrationController::class, 'export'])->name('admin.export.pdf');
+
+    
     
 
     
@@ -62,6 +67,17 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::put('/admin/events/{event}', [EventController::class, 'update'])->name('admin.events.update');
     Route::delete('/admin/events/{event}', [EventController::class, 'destroy'])->name('admin.events.destroy');
     Route::delete('/admin/registration/{registration}', [RegistrationController::class, 'destroy'])->name('admin.registrations.destroy');
+    Route::delete('/committee-members/{id}', [CommitteeMemberController::class, 'destroy'])
+    ->name('committee-members.destroy');
+    Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
+    Route::post('/events/{event}/committee-members', [EventController::class, 'storeCommitteeMember'])->name('committee-members.store');
+    Route::put('/events/{event}/committee-members/{member}', [EventController::class, 'updateCommitteeMember'])->name('committee-members.update');
+    Route::delete('/events/{event}/committee-members/{member}', [EventController::class, 'destroyCommitteeMember'])->name('committee-members.destroy');
+
+
+
+    
 
 });
 

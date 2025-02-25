@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Registration; 
 use Illuminate\Support\Facades\Storage;
+use App\Models\CommitteeMember;
 
 
 class EventController extends Controller
@@ -26,8 +27,10 @@ class EventController extends Controller
         // Fetch registrations only for this event
         $registrations = Registration::where('event_id', $event->id)->get();
         $events = Event::all();
+        $committee_members = $event->committeeMembers; // Fetch committee members related to this event
+
     
-        return view('events.show', compact('event', 'timelines', 'registrations', 'events'));
+        return view('events.show', compact('event', 'timelines', 'registrations', 'events','committee_members'));
     }
     
 
@@ -203,6 +206,48 @@ public function downloadSample($id)
     // Return the file for download
     return Storage::download('public/' . $event->sample_paper);
 }
+
+public function storeCommitteeMember(Request $request, $eventId)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'designation' => 'required|string|max:255',
+        'role' => 'nullable|string|max:255',
+    ]);
+
+    CommitteeMember::create([
+        'event_id' => $eventId,
+        'name' => $request->name,
+        'designation' => $request->designation,
+        'role' => $request->role,
+    ]);
+
+    return back()->with('success', 'Committee member added successfully!');
+}
+
+public function updateCommitteeMember(Request $request, $eventId, $memberId)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'designation' => 'required|string|max:255',
+        'role' => 'nullable|string|max:255',
+    ]);
+
+    $member = CommitteeMember::where('event_id', $eventId)->findOrFail($memberId);
+    $member->update($request->all());
+
+    return back()->with('success', 'Committee member updated successfully!');
+}
+
+public function destroyCommitteeMember(Event $event, CommitteeMember $member)
+{
+    $member->delete();
+
+    return redirect()->back()->with('success', 'Committee member deleted successfully.');
+}
+
+
+
 
     
 }

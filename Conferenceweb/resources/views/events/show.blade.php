@@ -227,11 +227,124 @@
 </div>
 </div>
 
+<div class="mt-16 container mx-auto p-6 bg-white shadow-lg rounded-lg"
+     x-data="{ 
+        showMemberModal: false, 
+        isEditing: false,
+        eventId: '{{ $event->id }}',
+        memberData: { id: '', name: '', designation: '', role: '' }
+     }">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h2 class="text-xl sm:text-2xl font-semibold">
+            <i class="fas fa-users text-blue-500"></i> Committee Members for "{{ $event->event_name }}"
+        </h2>
+
+        <!--Add Members -->
+        <button @click="isEditing = false; showMemberModal = true; memberData = { id: '', name: '', designation: '', role: '' }" 
+            class="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition">
+                Add Member
+        </button>
+    </div>
+    
+
+    <div class="overflow-x-auto rounded-lg shadow-md">
+    <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
+        <thead class="bg-gray-200 text-gray-700 uppercase text-center ">
+            <tr >
+                <th class="py-3 px-4 border">Sno</th>
+                <th class="py-3 px-4 border">Name</th>
+                <th class="py-3 px-4 border">Designation</th>
+                <th class="py-3 px-4 border">Role</th>
+                <th class="py-3 px-4 border">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 text-center">
+            @foreach($committee_members as $index => $member)
+            <tr class="border hover:bg-gray-100 transition">
+                <td class="py-3 px-4 border">{{ $index + 1 }}</td>
+                <td class="py-3 px-4 border">{{ $member->name }}</td>
+                <td class="py-3 px-4 border">{{ $member->designation }}</td>
+                <td class="py-3 px-4 border">{{ $member->role ?? 'N/A' }}</td>
+                <td class="py-3 px-4 border">
+                    <div class="flex justify-center rounded-lg overflow-hidden">
+                        <!-- Edit Committee Member -->
+                        <button 
+                                @click="isEditing = true; showMemberModal = true; memberData = { 
+                                    id: {{ $member->id }}, 
+                                    name: '{{ $member->name }}', 
+                                    designation: '{{ $member->designation }}', 
+                                    role: '{{ $member->role ?? '' }}'
+                                }" 
+                                class="p-2 bg-stone-700 text-white hover:bg-stone-900 transition rounded-l-lg">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                        <!-- Delete Committee Member -->
+                        <form method="POST" action="{{ route('committee-members.destroy', ['event' => $event->id, 'member' => $member->id]) }}" 
+                              onsubmit="return confirm('Are you sure you want to delete this member?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="p-2 bg-red-500 text-white hover:bg-red-600 transition rounded-r-lg">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+    <!-- Modal for Add/Edit Member -->
+    <div x-show="showMemberModal" x-transition 
+         class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded shadow-lg w-1/3">
+            <h2 class="text-xl font-bold" x-text="isEditing ? 'Edit Member' : 'Add Member'"></h2>
+
+            <!-- Form -->
+            <form method="POST" :action="isEditing ? `/events/${eventId}/committee-members/${memberData.id}` : `/events/${eventId}/committee-members`">
+                @csrf
+                <template x-if="isEditing">
+                    <input type="hidden" name="_method" value="PUT">
+                </template>
+
+                <div class="mt-4">
+                    <label class="block font-semibold">Name:</label>
+                    <input type="text" name="name" x-model="memberData.name" required 
+                           class="w-full border border-gray-300 p-2 rounded mt-1">
+                </div>
+
+                <div class="mt-4">
+                    <label class="block font-semibold">Designation:</label>
+                    <input type="text" name="designation" x-model="memberData.designation" required 
+                           class="w-full border border-gray-300 p-2 rounded mt-1">
+                </div>
+
+                <div class="mt-4">
+                    <label class="block font-semibold">Role:</label>
+                    <input type="text" name="role" x-model="memberData.role" 
+                           class="w-full border border-gray-300 p-2 rounded mt-1">
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="button" @click="showMemberModal = false" 
+                            class="bg-gray-400 text-white px-4 py-2 rounded mr-2">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        <span x-text="isEditing ? 'Update' : 'Add'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    
+ <!-- registrations table section  -->
 
 <div class="mt-16 container mx-auto p-6 bg-white shadow-lg rounded-lg" 
      x-data="{ showModal: false, selectedRegistration: {}, showEditForm: false, editData: {}, showExportModal: false }">
-
-
     
     <!-- Title & Search Section -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
@@ -242,7 +355,7 @@
         <!-- export registrations  -->
         <button @click="showExportModal = true" 
         class="inline-block px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition">
-            📄 Export PDF
+            📄 Export Registrations
         </button>
 
         <!-- Search Form -->
@@ -267,7 +380,7 @@
     <!-- Responsive Table -->
     <div class="overflow-x-auto rounded-lg shadow-md">
         <table class="min-w-full bg-white border border-gray-300 text-sm sm:text-base">
-            <thead class="bg-gray-200 text-gray-700 uppercase text-center sticky top-0">
+            <thead class="bg-gray-200 text-gray-700 uppercase text-center  top-0">
                 <tr>
                     <th class="py-3 px-4 border">Sno</th>
                     <th class="py-3 px-4 border">Name</th>
@@ -482,6 +595,9 @@
         </div>
     </div>
 </div>
-    
+
+<!-- commitee members section  -->
+
+
 
 @endsection

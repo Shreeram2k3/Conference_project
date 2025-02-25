@@ -28,4 +28,12 @@ class Event extends Model
         return $this->hasMany(Timeline::class);
     }
     
+
+  
+public function committeeMembers()
+{
+    return $this->hasMany(CommitteeMember::class, 'event_id');
+}
+
+    
 }
