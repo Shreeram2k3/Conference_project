@@ -41,7 +41,7 @@ class RegistrationController extends Controller
             'institution' => $request->institution,
             'designation' => $request->designation,
             'event_id' => $event->id,
-            'user_id' => auth()->id(),
+            // 'user_id' => auth()->id(),
             'abstract' => $abstractPath,
             'mode' => $request->mode,
             
@@ -139,6 +139,44 @@ class RegistrationController extends Controller
 }
 
 
-   
+//    regitration without authentication 
+
+public function storeUser(Request $request, Event $event)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'email' => 'required|email|max:255',
+        'institution' => 'required|string|max:255',
+        'designation' => 'required|string|max:255',
+        'abstract' => 'nullable|file|mimes:doc,docx|max:2048',
+        'mode' => 'required|in:Online,Offline',
+    ]);
+
+    // Handle file upload
+    $abstractPath = null;
+    if ($request->hasFile('abstract')) {
+        $abstractPath = $request->file('abstract')->store('abstracts', 'public');
+    }
+
+    // Create a new registration without user_id
+    Registration::create([
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'email' => $request->email,
+        'institution' => $request->institution,
+        'designation' => $request->designation,
+        'event_id' => $event->id,
+        'abstract' => $abstractPath,
+        'mode' => $request->mode,
+    ]);
+
+    // Redirect to event details page
+    // return redirect()->route('eventinfo', $event->id)->with('success', 'Registration successful!');
+    return back()->with('success', 'Registration successful!');
+
+    
+}
+
     
 }

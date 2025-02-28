@@ -246,6 +246,18 @@ public function destroyCommitteeMember(Event $event, CommitteeMember $member)
     return redirect()->back()->with('success', 'Committee member deleted successfully.');
 }
 
+public function guestView()
+{
+    $events = Event::all();
+    return view('Home', compact('events'));
+}
+
+
+public function publicShow($id)
+{
+    $event = Event::findOrFail($id); // Fetch the event
+    return view('eventinfo', compact('event')); // Return the new event details page
+}
 
 
 

@@ -90,51 +90,40 @@
     @foreach ($events as $event)
 
     <!-- Event Card -->
-    <a href="{{ route('events.show', $event->id) }}" >
-
-        <div class="relative group rounded-xl overflow-hidden shadow-lg cursor-pointer transition-transform hover:scale-105">
-            <!-- Background Image -->
-            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->event_name }}" 
-                class="w-full h-60 object-cover transition-transform group-hover:scale-105 duration-300">
-            
-            <!-- Dark Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-    
-            <!-- Event Category Badge -->
-            <span class="absolute top-4 left-0 px-5 py-2 text-xs font-semibold text-black
-                {{ $event->category == 'International' ? 'bg-lime-500' : ($event->category == 'National' ? 'bg-orange-500' : 'bg-blue-500') }}
-                rounded-tr-lg rounded-br-lg">
-                {{ $event->category }}
-            </span>
-    
-            <!-- Event Info -->
-            <div class="absolute bottom-4 left-4 text-white">
-                <h3 class="text-lg font-bold">{{ $event->event_name }}</h3>
-                
-                <p class="text-sm">
+    <div class="relative group rounded-xl overflow-hidden shadow-lg cursor-pointer transition-transform hover:scale-105">
+    <a href="{{ route('events.show', $event->id) }}">
+        <!-- Event Content -->
+        <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->event_name }}" 
+            class="w-full h-60 object-cover transition-transform group-hover:scale-105 duration-300">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+        <span class="absolute top-4 left-0 px-5 py-2 text-xs font-semibold text-black
+            {{ $event->category == 'International' ? 'bg-lime-500' : 'bg-orange-500' }} rounded-tr-lg rounded-br-lg">
+            {{ $event->category }}
+        </span>
+        <div class="absolute bottom-4 left-4 text-white">
+            <h3 class="text-lg font-bold">{{ $event->event_name }}</h3>
+            <p class="text-sm">
                 {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }} - 
                 {{ \Carbon\Carbon::parse($event->end_date)->format('M d, Y') }}
-                </p>
-
-
-                
-            </div>
-    
-            <!-- Edit & Delete Buttons -->
-            <div class="absolute top-3 right-3 flex space-x-3">
-                <button @click="showEditForm = true; editData = { id: {{ $event->id }}, event_name: '{{ $event->event_name }}', description: '{{ $event->description }}', start_date: '{{ $event->start_date }}', end_date: '{{ $event->end_date }}' }" class="text-white hover:text-gray-300">
-                    <i class="fas fa-pen text-blue-500"></i>
-                </button>
-                <form method="POST" action="{{ route('admin.events.destroy', $event->id) }}" onsubmit="return confirm('Are you sure?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </form>
-            </div>
+            </p>
         </div>
     </a>
+
+    <!-- Edit & Delete Buttons (Outside <a>) -->
+    <div class="absolute top-3 right-3 flex space-x-3">
+        <button @click="showEditForm = true; editData = { id: {{ $event->id }}, event_name: '{{ $event->event_name }}', description: '{{ $event->description }}', start_date: '{{ $event->start_date }}', end_date: '{{ $event->end_date }}' }" class="text-white hover:text-gray-300">
+            <i class="fas fa-pen text-blue-500"></i>
+        </button>
+        <form method="POST" action="{{ route('admin.events.destroy', $event->id) }}" onsubmit="return confirm('Are you sure?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="text-red-500 hover:text-red-700">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
 
     @endforeach
 </div>

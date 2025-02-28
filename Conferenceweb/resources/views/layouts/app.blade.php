@@ -39,7 +39,7 @@
     <nav class="bg-gray-700 p-5 w-full fixed top-0 z-50 px-6">
         
         <div class="container mx-4 flex justify-between items-center">
-            <!-- <a href="/dashboard" class="text-white text-xl font-bold">Conference</a> -->
+            
             <a href="/dashboard" class="flex items-center space-x-2 text-white text-xl font-bold">
             <img src="{{ asset('images/ddtlogo.png') }}" alt="Logo" class="h-8 w-8">
 
@@ -57,22 +57,27 @@
             
             <div x-data="{ open: false }" class="relative hidden sm:flex justify-end w-full ">
 
-            <!-- Profile Section -->
-            <div @click="open = !open" class="flex items-center space-x-2 cursor-pointer">
-                <!-- Profile Icon with First Letter -->
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                
-                <!-- Username & Dropdown Icon -->
-                <div class="flex items-center space-x-1">
-                    <span class="text-white font-thin">{{ auth()->user()->name }}</span>
-                    <!-- Dropdown Icon -->
-                    <svg class="w-4 h-4 text-white transition-transform duration-200" :class="open ? 'rotate-180' : 'rotate-0'" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-            </div>
+           <!-- Profile Section -->
+@if(auth()->check())
+    <div @click="open = !open" class="flex items-center space-x-2 cursor-pointer">
+        <!-- Profile Icon with First Letter -->
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
+            {{ strtoupper(substr(optional(auth()->user())->name ?? 'U', 0, 1)) }}
+        </div>
+
+        <!-- Username & Dropdown Icon -->
+        <div class="flex items-center space-x-1">
+            <span class="text-white font-thin">{{ optional(auth()->user())->name ?? 'User' }}</span>
+            <!-- Dropdown Icon -->
+            <svg class="w-4 h-4 text-white transition-transform duration-200" :class="open ? 'rotate-180' : 'rotate-0'" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </div>
+    </div>
+@else
+    <a href="{{ route('login') }}" class="text-white">Login</a>
+@endif
+
 
 
             <!-- Profile Dropdown (Desktop) -->
@@ -135,30 +140,31 @@
                 Events
             </a>
         </li>
-        @if(auth()->user()->userrole === 'admin')
-            <li class="mb-2">
-                <a href="/admin/dashboard" 
-                   class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
-                          {{ Request::is('admin/dashboard') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
-                    Admin Dashboard
-                </a>
-            </li>
-            <li class="mb-2">
-                <a href="{{ route('admin.registration') }}" 
-                   class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
-                          {{ Request::is('admin/registration') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
-                    Registrations
-                </a>
-            </li>
-        @elseif(auth()->user()->userrole === 'organizer')
-            <li class="mb-2">
-                <a href="/organizer/dashboard" 
-                   class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
-                          {{ Request::is('organizer/dashboard') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
-                    Organizer Dashboard
-                </a>
-            </li>
-        @endif
+        @if(auth()->check() && auth()->user()->userrole === 'admin')
+    <li class="mb-2">
+        <a href="/admin/dashboard" 
+           class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
+                  {{ Request::is('admin/dashboard') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
+            Admin Dashboard
+        </a>
+    </li>
+    <li class="mb-2">
+        <a href="{{ route('admin.registration') }}" 
+           class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
+                  {{ Request::is('admin/registration') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
+            Registrations
+        </a>
+    </li>
+@elseif(auth()->check() && auth()->user()->userrole === 'organizer')
+    <li class="mb-2">
+        <a href="/organizer/dashboard" 
+           class="block px-4 py-2 rounded-lg transition-all duration-300 border-l-4 
+                  {{ Request::is('organizer/dashboard') ? 'border-blue-500 pl-6 bg-gray-700 font-medium' : 'border-transparent hover:border-blue-500 hover:pl-6' }}">
+            Organizer Dashboard
+        </a>
+    </li>
+@endif
+
     </ul>
     
 
@@ -167,19 +173,24 @@
     <!-- Profile Section (Click to Toggle) -->
     <div @click="open = !open" class="flex items-center space-x-2 cursor-pointer">
         <!-- Profile Icon -->
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
-            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-        </div>
-        
-        <!-- Username & Dropdown Icon -->
-        <div class="flex items-center space-x-1">
-            <span class="text-white font-thin">{{ auth()->user()->name }}</span>
-            <svg class="w-4 h-4 text-white transition-transform duration-300 ease-in-out"
-                 :class="open ? 'rotate-180' : 'rotate-0'" 
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-        </div>
+        @if(auth()->check())
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold bg-teal-400">
+        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+    </div>
+
+    <!-- Username & Dropdown Icon -->
+    <div class="flex items-center space-x-1">
+        <span class="text-white font-thin">{{ auth()->user()->name }}</span>
+        <svg class="w-4 h-4 text-white transition-transform duration-300 ease-in-out"
+             :class="open ? 'rotate-180' : 'rotate-0'" 
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+@else
+    <a href="{{ route('login') }}" class="text-white">Login</a>
+@endif
+
     </div>
 
     <!-- Drop-Up Menu -->

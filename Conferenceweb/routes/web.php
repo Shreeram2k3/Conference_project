@@ -19,11 +19,24 @@ use App\Http\Controllers\Admin\CommitteeMemberController;
 
 // Guest View (Home Page)
 Route::get('/', function () {
-    return view('welcome');
+    return view('Home');
 });
 
+Route::get('/', [EventController::class, 'guestView'])->name('guest.home'); // For guests
+Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events'); // For admin
+
+// Route::get('/event/{id}', [EventController::class, 'publicShow'])->name('eventinfo');
+
+// register without authentication
+Route::get('/event/{id}', [EventController::class, 'publicShow'])->name('eventinfo');
+// Registration without authentication
+Route::post('/events/{event}/register', [RegistrationController::class, 'storeUser'])->name('events.register');
+
+
+
+
 // Authenticated User Routes
-Route::middleware(['auth'])->group(function () {
+// Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
 
     // Events Browsing
@@ -35,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/download/sample/{id}', [EventController::class, 'downloadSample'])
     ->name('download.sample');
-});
+// });
 
 // Admin Routes (with AdminMiddleware)
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
@@ -80,6 +93,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     
 
 });
+
+
 
 // Logout
 Route::post('/logout', function () {
